@@ -1,0 +1,1 @@
+include ':app', ':icarus_annotations', ':icarus_processor', ':icarus_core'

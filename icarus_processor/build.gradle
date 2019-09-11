@@ -1,1 +1,6 @@
+apply plugin: Plugins.kotlinKapt
 apply from: "$rootDir/common-android-library.gradle"
+
+dependencies {
+    implementation project(Modules.icarusAnnotations)
+}

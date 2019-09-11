@@ -18,5 +18,7 @@ object Versions {
     const val jUnitVersion = "4.12"
     const val testRunnerVersion = "1.1.0"
     const val espressoCoreVersion = "3.1.0"
+    const val autoServiceVersion = "1.0-rc6"
+    const val kotlinPoetVersion = "1.3.0"
 }
 

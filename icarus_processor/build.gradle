@@ -1,6 +1,11 @@
 apply plugin: Plugins.kotlinKapt
-apply from: "$rootDir/common-android-library.gradle"
+apply plugin: 'kotlin'
 
 dependencies {
     implementation project(Modules.icarusAnnotations)
+
+    implementation Libraries.kotlinPoet
+    implementation Libraries.autoService
+    kapt Libraries.autoService
+
 }

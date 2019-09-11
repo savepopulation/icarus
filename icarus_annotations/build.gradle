@@ -1,1 +1,2 @@
-apply from: "$rootDir/common-android-library.gradle"
+apply plugin: Plugins.kotlinKapt
+apply plugin: 'kotlin'

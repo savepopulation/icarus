@@ -25,5 +25,6 @@ object TestLibraries {
  * Common Libraries
  */
 object Libraries {
-
+    const val autoService = "com.google.auto.service:auto-service:${Versions.autoServiceVersion}"
+    const val kotlinPoet = "com.squareup:kotlinpoet:${Versions.kotlinPoetVersion}"
 }

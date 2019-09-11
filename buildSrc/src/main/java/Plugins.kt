@@ -1,4 +1,4 @@
-/**
+/*
  * Plugins
  */
 object Plugins {
@@ -7,4 +7,5 @@ object Plugins {
     const val kotlinAndroid = "kotlin-android"
     const val kotlinAndroidExtensions = "kotlin-android-extensions"
     const val kotlinKapt = "kotlin-kapt"
+    const val javaLibrary = "java"
 }

@@ -22,7 +22,7 @@ object Icarus {
 
 
     internal fun String.createIntentFeature() = try {
-        Class.forName(this).also { intentTo(this@createIntentFeature) }
+        Class.forName(this).run { intentTo(this@createIntentFeature) }
     } catch (e: ClassNotFoundException) {
         null
     }

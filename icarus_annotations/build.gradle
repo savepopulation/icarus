@@ -1,2 +1,2 @@
-apply plugin: Plugins.kotlinKapt
 apply plugin: 'kotlin'
+apply plugin: Plugins.kotlinKapt

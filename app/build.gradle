@@ -26,4 +26,8 @@ dependencies {
     androidTestImplementation TestLibraries.runnner
     androidTestImplementation TestLibraries.espressoCore
 
+    // Icarus
+    implementation project(Modules.icarusAnnotations)
+    kapt project(Modules.icarusProcessor)
+
 }

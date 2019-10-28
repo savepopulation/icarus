@@ -3,16 +3,13 @@ package com.raqun.icarus.processor
 import com.google.auto.service.AutoService
 import com.raqun.icarus.annotations.Feature
 import com.raqun.icarus.processor.util.isClass
-import com.raqun.icarus.processor.util.log
 import com.raqun.icarus.processor.util.logError
 import java.io.IOException
 import javax.annotation.processing.AbstractProcessor
-import javax.annotation.processing.ProcessingEnvironment
 import javax.annotation.processing.Processor
 import javax.annotation.processing.RoundEnvironment
 import javax.lang.model.SourceVersion
 import javax.lang.model.element.TypeElement
-import javax.tools.Diagnostic
 
 
 @AutoService(Processor::class)

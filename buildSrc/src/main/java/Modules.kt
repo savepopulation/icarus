@@ -8,5 +8,6 @@ object Modules {
      */
     const val icarusAnnotations = ":icarus_annotations"
     const val icarusProcessor = ":icarus_processor"
+    const val icarusCore = ":icarus_core"
 
 }

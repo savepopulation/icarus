@@ -1,5 +1,5 @@
 package com.raqun.icarus.processor
 
-enum class FetureType {
+enum class FeatureType {
     INTENT, FRAGMENT
 }

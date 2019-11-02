@@ -28,6 +28,6 @@ dependencies {
 
     // Icarus
     implementation project(Modules.icarusAnnotations)
+    implementation project(Modules.icarusCore)
     kapt project(Modules.icarusProcessor)
-
 }

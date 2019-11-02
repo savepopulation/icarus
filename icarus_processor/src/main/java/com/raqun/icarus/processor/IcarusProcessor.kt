@@ -2,16 +2,15 @@ package com.raqun.icarus.processor
 
 import com.google.auto.service.AutoService
 import com.raqun.icarus.annotations.Feature
-import com.raqun.icarus.processor.util.generateFile
-import com.raqun.icarus.processor.util.isClass
-import com.raqun.icarus.processor.util.log
-import com.raqun.icarus.processor.util.logError
+import com.raqun.icarus.processor.util.*
+import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.TypeSpec
 import java.io.IOException
 import javax.annotation.processing.AbstractProcessor
 import javax.annotation.processing.Processor
 import javax.annotation.processing.RoundEnvironment
 import javax.lang.model.SourceVersion
+import javax.lang.model.element.Element
 import javax.lang.model.element.TypeElement
 
 
@@ -64,18 +63,42 @@ class IcarusProcessor : AbstractProcessor() {
                 return false
             }
 
-            val featureAnnotation = element.getAnnotation(Feature::class.java)
-            val feature = FeatureHolder(featureAnnotation.name)
-            features.add(feature)
+            createFeature(element = element)
         }
 
         return true
+    }
+
+    private fun createFeature(element: Element) {
+        val featureAnnotation = element.getAnnotation(Feature::class.java)
+        val featureType: FeatureType = when {
+            element.isActivity(processingEnv) -> FeatureType.INTENT
+            element.isFragment(processingEnv) -> FeatureType.FRAGMENT
+            else -> throw IllegalArgumentException("Feature annotation can only be used with classes!")
+        }
+        val feature = FeatureHolder(featureAnnotation.name, featureType)
+        features.add(feature)
     }
 
     private fun generateFiles() {
         processingEnv.logError("genereting files")
         for (feature in features) {
             val typeSpecBuilder = TypeSpec.objectBuilder(feature.featureName)
+            if (feature.type == FeatureType.INTENT) {
+                typeSpecBuilder.addSuperinterface(
+                    ClassName(
+                        "com.raqun.icarus.core",
+                        "Feature"
+                    )
+                )
+            } else if (feature.type == FeatureType.FRAGMENT) {
+                typeSpecBuilder.addSuperinterface(
+                    ClassName(
+                        "com.raqun.icarus.core",
+                        "Feature"
+                    )
+                )
+            }
             processingEnv.generateFile(
                 typeSpecBuilder.build(),
                 feature.featureName,

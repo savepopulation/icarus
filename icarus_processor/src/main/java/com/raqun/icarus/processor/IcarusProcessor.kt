@@ -4,6 +4,7 @@ import com.google.auto.service.AutoService
 import com.raqun.icarus.annotations.Feature
 import com.raqun.icarus.processor.util.*
 import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.plusParameter
 import com.squareup.kotlinpoet.TypeSpec
 import java.io.IOException
 import javax.annotation.processing.AbstractProcessor
@@ -12,7 +13,6 @@ import javax.annotation.processing.RoundEnvironment
 import javax.lang.model.SourceVersion
 import javax.lang.model.element.Element
 import javax.lang.model.element.TypeElement
-
 
 @AutoService(Processor::class)
 class IcarusProcessor : AbstractProcessor() {
@@ -89,7 +89,7 @@ class IcarusProcessor : AbstractProcessor() {
                     ClassName(
                         "com.raqun.icarus.core",
                         "Feature"
-                    )
+                    ).plusParameter(ClassName("android.content", "Intent"))
                 )
             } else if (feature.type == FeatureType.FRAGMENT) {
                 typeSpecBuilder.addSuperinterface(

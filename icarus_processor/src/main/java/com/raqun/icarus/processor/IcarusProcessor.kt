@@ -4,7 +4,9 @@ import com.google.auto.service.AutoService
 import com.raqun.icarus.annotations.Feature
 import com.raqun.icarus.processor.util.*
 import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.plusParameter
+import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import java.io.IOException
 import javax.annotation.processing.AbstractProcessor
@@ -76,7 +78,13 @@ class IcarusProcessor : AbstractProcessor() {
             element.isFragment(processingEnv) -> FeatureType.FRAGMENT
             else -> throw IllegalArgumentException("Feature annotation can only be used with classes!")
         }
-        val feature = FeatureHolder(featureAnnotation.name, featureType)
+        val feature = FeatureHolder(
+            featureAnnotation.name,
+            featureType,
+            processingEnv.elementUtils.getPackageOf(element).toString(),
+            element.simpleName.toString()
+        )
+
         features.add(feature)
     }
 
@@ -99,6 +107,15 @@ class IcarusProcessor : AbstractProcessor() {
                     ).plusParameter(ClassName("androidx.fragment.app", "Fragment"))
                 )
             }
+
+            val dynamicPathProperty =
+                PropertySpec.builder(feature.featureName.toUpperCase(), String::class)
+                    .addModifiers(KModifier.PRIVATE, KModifier.CONST)
+                    .initializer("%S", "${feature.packageName}.${feature.className}")
+                    .build()
+
+            typeSpecBuilder.addProperty(dynamicPathProperty)
+
             processingEnv.generateFile(
                 typeSpecBuilder.build(),
                 feature.featureName,

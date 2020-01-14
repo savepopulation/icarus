@@ -96,7 +96,7 @@ class IcarusProcessor : AbstractProcessor() {
                     ClassName(
                         "com.raqun.icarus.core",
                         "Feature"
-                    )
+                    ).plusParameter(ClassName("androidx.fragment.app", "Fragment"))
                 )
             }
             processingEnv.generateFile(

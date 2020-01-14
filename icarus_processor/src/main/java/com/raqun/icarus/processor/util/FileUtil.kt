@@ -11,7 +11,6 @@ fun ProcessingEnvironment.generateFile(
     fileName: String,
     packageName: String
 ) {
-    this.logWarning("generating $fileName")
     FileSpec.builder(packageName, fileName)
         .addType(typeSpec)
         .build()

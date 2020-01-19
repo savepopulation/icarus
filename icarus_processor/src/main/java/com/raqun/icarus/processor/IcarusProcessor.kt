@@ -3,13 +3,11 @@ package com.raqun.icarus.processor
 import com.google.auto.service.AutoService
 import com.raqun.icarus.annotations.Feature
 import com.raqun.icarus.processor.util.*
-import com.squareup.kotlinpoet.ClassName
-import com.squareup.kotlinpoet.KModifier
+import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.plusParameter
-import com.squareup.kotlinpoet.PropertySpec
-import com.squareup.kotlinpoet.TypeSpec
 import java.io.IOException
 import javax.annotation.processing.AbstractProcessor
+import javax.annotation.processing.ProcessingEnvironment
 import javax.annotation.processing.Processor
 import javax.annotation.processing.RoundEnvironment
 import javax.lang.model.SourceVersion
@@ -95,11 +93,11 @@ class IcarusProcessor : AbstractProcessor() {
         processingEnv.logError("generating files")
 
         features.forEach {
-            processingEnv.generateFile(
-                it.create(),
-                it.featureName,
-                PACKAGE_NAME
-            )
+            FileSpec.builder(PACKAGE_NAME, it.featureName)
+                .addType(it.create())
+                .addImport("${PACKAGE_NAME}.core.Icarus", it.type.method)
+                .build()
+                .writeTo(processingEnv.filer)
         }
     }
 }
@@ -122,8 +120,13 @@ fun DynamicFeature.create(): TypeSpec {
         addProperty(
             PropertySpec.builder(
                 DYNAMIC_START_METHOD_NAME,
-                ClassName(this@create.packageName, this@create.className)
-            ).addModifiers(KModifier.OVERRIDE).build()
+                ClassName(
+                    this@create.type.packageName,
+                    this@create.type.simpleName
+                ).copy(nullable = true)
+            ).addModifiers(KModifier.OVERRIDE)
+                .initializer(CodeBlock.of("${this@create.featureName.toUpperCase()}.${this@create.type.method}()"))
+                .build()
         )
 
         build()

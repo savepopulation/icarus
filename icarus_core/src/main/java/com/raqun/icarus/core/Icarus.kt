@@ -21,13 +21,13 @@ object Icarus {
         }.cast()
 
 
-    internal fun String.createIntentFeature() = try {
+    fun String.createIntentFeature() = try {
         Class.forName(this).run { intentTo(this@createIntentFeature) }
     } catch (e: ClassNotFoundException) {
         null
     }
 
-    internal fun String.createFragmentFeature() = try {
+    fun String.createFragmentFeature() = try {
         this.getFeature<Fragment>()?.newInstance()
     } catch (e: ClassNotFoundException) {
         null

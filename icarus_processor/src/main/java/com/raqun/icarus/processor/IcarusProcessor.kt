@@ -16,12 +16,14 @@ import javax.lang.model.SourceVersion
 import javax.lang.model.element.Element
 import javax.lang.model.element.TypeElement
 
+private const val DYNAMIC_START_METHOD_NAME = "dynamicStart"
+
 @AutoService(Processor::class)
 class IcarusProcessor : AbstractProcessor() {
 
     private var round = -1
     private var HALT = false
-    private val features = arrayListOf<FeatureHolder>()
+    private val features = arrayListOf<DynamicFeature>()
 
     override fun getSupportedSourceVersion() = SourceVersion.latestSupported()
 
@@ -78,7 +80,7 @@ class IcarusProcessor : AbstractProcessor() {
             element.isFragment(processingEnv) -> FeatureType.FRAGMENT
             else -> throw IllegalArgumentException("Feature annotation can only be used with classes!")
         }
-        val feature = FeatureHolder(
+        val feature = DynamicFeature(
             featureAnnotation.name,
             featureType,
             processingEnv.elementUtils.getPackageOf(element).toString(),
@@ -89,32 +91,24 @@ class IcarusProcessor : AbstractProcessor() {
     }
 
     private fun generateFiles() {
-        processingEnv.logError("genereting files")
+        processingEnv.logError("generating files")
+
         for (feature in features) {
-            val typeSpecBuilder = TypeSpec.objectBuilder(feature.featureName)
-            if (feature.type == FeatureType.INTENT) {
-                typeSpecBuilder.addSuperinterface(
-                    ClassName(
-                        "com.raqun.icarus.core",
-                        "Feature"
-                    ).plusParameter(ClassName("android.content", "Intent"))
-                )
-            } else if (feature.type == FeatureType.FRAGMENT) {
-                typeSpecBuilder.addSuperinterface(
-                    ClassName(
-                        "com.raqun.icarus.core",
-                        "Feature"
-                    ).plusParameter(ClassName("androidx.fragment.app", "Fragment"))
-                )
+            val typeSpecBuilder = when (feature.type) {
+                FeatureType.FRAGMENT -> {
+                    TypeSpec.objectBuilder(feature.featureName)
+                        .fragment()
+                        .dynamic(feature)
+                        .fragmentFeature()
+                }
+
+                FeatureType.INTENT -> {
+                    TypeSpec.objectBuilder(feature.featureName)
+                        .activity()
+                        .dynamic(feature)
+                        .activityFeature()
+                }
             }
-
-            val dynamicPathProperty =
-                PropertySpec.builder(feature.featureName.toUpperCase(), String::class)
-                    .addModifiers(KModifier.PRIVATE, KModifier.CONST)
-                    .initializer("%S", "${feature.packageName}.${feature.className}")
-                    .build()
-
-            typeSpecBuilder.addProperty(dynamicPathProperty)
 
             processingEnv.generateFile(
                 typeSpecBuilder.build(),
@@ -123,4 +117,53 @@ class IcarusProcessor : AbstractProcessor() {
             )
         }
     }
+}
+
+fun TypeSpec.Builder.fragment(): TypeSpec.Builder {
+    addSuperinterface(
+        ClassName("com.raqun.icarus.core", "Feature")
+            .plusParameter(ClassName("androidx.fragment.app", "Fragment"))
+    )
+    return this
+}
+
+fun TypeSpec.Builder.activity(): TypeSpec.Builder {
+    addSuperinterface(
+        ClassName(
+            "com.raqun.icarus.core", "Feature"
+        ).plusParameter(ClassName("android.content", "Intent"))
+    )
+    return this
+}
+
+fun TypeSpec.Builder.dynamic(
+    dynamicFeature: DynamicFeature
+): TypeSpec.Builder {
+    addProperty(
+        PropertySpec.builder(dynamicFeature.featureName.toUpperCase(), String::class)
+            .addModifiers(KModifier.PRIVATE, KModifier.CONST)
+            .initializer("%S", "${dynamicFeature.packageName}.${dynamicFeature.className}")
+            .build()
+    )
+    return this
+}
+
+fun TypeSpec.Builder.fragmentFeature(): TypeSpec.Builder {
+    addProperty(
+        PropertySpec.builder(
+            DYNAMIC_START_METHOD_NAME,
+            ClassName("androidx.fragment.app", "Fragment")
+        ).addModifiers(KModifier.OVERRIDE).build()
+    )
+    return this
+}
+
+fun TypeSpec.Builder.activityFeature(): TypeSpec.Builder {
+    addProperty(
+        PropertySpec.builder(
+            DYNAMIC_START_METHOD_NAME,
+            ClassName("android.content", "Intent")
+        ).addModifiers(KModifier.OVERRIDE).build()
+    )
+    return this
 }

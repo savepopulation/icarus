@@ -1,2 +1,6 @@
-apply plugin: 'kotlin'
+apply plugin: Plugins.kotlin
 apply plugin: Plugins.kotlinKapt
+
+dependencies {
+    implementation CoreLibraries.kotlin
+}

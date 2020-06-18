@@ -6,6 +6,7 @@ import com.raqun.icarus.processor.util.*
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.plusParameter
 import java.io.IOException
+import java.util.*
 import javax.annotation.processing.AbstractProcessor
 import javax.annotation.processing.ProcessingEnvironment
 import javax.annotation.processing.Processor
@@ -24,7 +25,7 @@ class IcarusProcessor : AbstractProcessor() {
     private var HALT = false
     private val features = arrayListOf<DynamicFeature>()
 
-    override fun getSupportedSourceVersion() = SourceVersion.latestSupported()
+    override fun getSupportedSourceVersion(): SourceVersion? = SourceVersion.latestSupported()
 
     override fun getSupportedAnnotationTypes() = mutableSetOf(Feature::class.java.name)
 
@@ -90,8 +91,7 @@ class IcarusProcessor : AbstractProcessor() {
     }
 
     private fun generateFiles() {
-        processingEnv.logError("generating files")
-
+        processingEnv.log("Icarus generating files")
         features.forEach {
             FileSpec.builder(PACKAGE_NAME, it.featureName)
                 .addType(it.create())
@@ -111,8 +111,10 @@ fun DynamicFeature.create(): TypeSpec {
         )
 
         addProperty(
-            PropertySpec.builder(this@create.featureName.toUpperCase(), String::class)
-                .addModifiers(KModifier.PRIVATE, KModifier.CONST)
+            PropertySpec.builder(
+                this@create.featureName.toUpperCase(),
+                String::class
+            ).addModifiers(KModifier.PRIVATE, KModifier.CONST)
                 .initializer("%S", "${this@create.packageName}.${this@create.className}")
                 .build()
         )

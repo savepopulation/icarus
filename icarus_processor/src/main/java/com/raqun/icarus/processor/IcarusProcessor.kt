@@ -6,17 +6,17 @@ import com.raqun.icarus.processor.util.*
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.plusParameter
 import java.io.IOException
-import java.util.*
 import javax.annotation.processing.AbstractProcessor
-import javax.annotation.processing.ProcessingEnvironment
 import javax.annotation.processing.Processor
 import javax.annotation.processing.RoundEnvironment
 import javax.lang.model.SourceVersion
 import javax.lang.model.element.Element
 import javax.lang.model.element.TypeElement
+import com.raqun.icarus.processor.DynamicFeature.IntentFeature
+import com.raqun.icarus.processor.DynamicFeature.FragmentFeature
 
-private const val PACKAGE_NAME = "com.raqun.icarus"
-private const val DYNAMIC_START_METHOD_NAME = "dynamicStart"
+const val PACKAGE_NAME = "com.raqun.icarus"
+const val DYNAMIC_START_METHOD_NAME = "dynamicStart"
 
 @AutoService(Processor::class)
 class IcarusProcessor : AbstractProcessor() {
@@ -75,18 +75,25 @@ class IcarusProcessor : AbstractProcessor() {
 
     private fun createFeature(element: Element) {
         val featureAnnotation = element.getAnnotation(Feature::class.java)
-        val featureType: FeatureType = when {
-            element.isActivity(processingEnv) -> FeatureType.INTENT
-            element.isFragment(processingEnv) -> FeatureType.FRAGMENT
-            else -> throw IllegalArgumentException("Feature annotation can only be used with classes!")
+        val feature: DynamicFeature = when {
+            element.isActivity(processingEnv) -> {
+                IntentFeature(
+                    featureAnnotation.name,
+                    processingEnv.elementUtils.getPackageOf(element).toString(),
+                    element.simpleName.toString()
+                )
+            }
+            element.isFragment(processingEnv) -> {
+                FragmentFeature(
+                    featureAnnotation.name,
+                    processingEnv.elementUtils.getPackageOf(element).toString(),
+                    element.simpleName.toString()
+                )
+            }
+            else -> {
+                throw IllegalArgumentException("Feature annotation can only be used with classes!")
+            }
         }
-        val feature = DynamicFeature(
-            featureAnnotation.name,
-            featureType,
-            processingEnv.elementUtils.getPackageOf(element).toString(),
-            element.simpleName.toString()
-        )
-
         features.add(feature)
     }
 
@@ -94,43 +101,10 @@ class IcarusProcessor : AbstractProcessor() {
         processingEnv.log("Icarus generating files")
         features.forEach {
             FileSpec.builder(PACKAGE_NAME, it.featureName)
-                .addType(it.create())
+                .addType(it.build())
                 .addImport("${PACKAGE_NAME}.core.Icarus", it.type.method)
                 .build()
                 .writeTo(processingEnv.filer)
         }
-    }
-}
-
-fun DynamicFeature.create(): TypeSpec {
-
-    return with(TypeSpec.objectBuilder(this.featureName)) {
-        addSuperinterface(
-            ClassName("$PACKAGE_NAME.core", "Feature")
-                .plusParameter(ClassName(this@create.type.packageName, this@create.type.simpleName))
-        )
-
-        addProperty(
-            PropertySpec.builder(
-                "path",
-                String::class
-            ).addModifiers(KModifier.OVERRIDE)
-                .initializer("%S", "${this@create.packageName}.${this@create.className}")
-                .build()
-        )
-
-        addProperty(
-            PropertySpec.builder(
-                DYNAMIC_START_METHOD_NAME,
-                ClassName(
-                    this@create.type.packageName,
-                    this@create.type.simpleName
-                ).copy(nullable = true)
-            ).addModifiers(KModifier.OVERRIDE)
-                .initializer(CodeBlock.of("path.${this@create.type.method}()"))
-                .build()
-        )
-
-        build()
     }
 }

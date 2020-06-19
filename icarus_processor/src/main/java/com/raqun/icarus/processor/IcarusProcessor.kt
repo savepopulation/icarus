@@ -112,9 +112,9 @@ fun DynamicFeature.create(): TypeSpec {
 
         addProperty(
             PropertySpec.builder(
-                this@create.featureName.toUpperCase(),
+                "path",
                 String::class
-            ).addModifiers(KModifier.PRIVATE, KModifier.CONST)
+            ).addModifiers(KModifier.OVERRIDE)
                 .initializer("%S", "${this@create.packageName}.${this@create.className}")
                 .build()
         )
@@ -127,7 +127,7 @@ fun DynamicFeature.create(): TypeSpec {
                     this@create.type.simpleName
                 ).copy(nullable = true)
             ).addModifiers(KModifier.OVERRIDE)
-                .initializer(CodeBlock.of("${this@create.featureName.toUpperCase()}.${this@create.type.method}()"))
+                .initializer(CodeBlock.of("path.${this@create.type.method}()"))
                 .build()
         )
 

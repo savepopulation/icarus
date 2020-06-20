@@ -2,6 +2,7 @@ package com.raqun.icarus.processor
 
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.plusParameter
+import javax.lang.model.element.Element;
 
 sealed class DynamicFeature {
 
@@ -12,6 +13,8 @@ sealed class DynamicFeature {
     abstract val className: String
 
     abstract val type: FeatureType
+
+    val params: MutableMap<String, Element> = linkedMapOf()
 
     data class IntentFeature(
         override val featureName: String,
@@ -62,5 +65,9 @@ sealed class DynamicFeature {
 
             build()
         }
+    }
+
+    fun addParam(key: String, e: Element) {
+        params[key] = e
     }
 }

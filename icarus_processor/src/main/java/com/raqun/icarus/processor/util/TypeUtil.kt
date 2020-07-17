@@ -24,11 +24,21 @@ fun TypeMirror?.isActivity(processingEnvironment: ProcessingEnvironment): Boolea
 }
 
 /*
- * Checks if class is Serializable
+ * Checks if class implements Serializable
  */
 fun TypeMirror?.isSerializable(processingEnvironment: ProcessingEnvironment): Boolean {
     if (this == null) return false
     val serializableTypeMirror =
         processingEnvironment.elementUtils.getTypeElement("java.io.Serializable").asType()
     return processingEnvironment.typeUtils.isAssignable(this, serializableTypeMirror)
+}
+
+/*
+ * Checks if class implements Parcelable
+ */
+fun TypeMirror?.isParcelable(processingEnvironment: ProcessingEnvironment): Boolean {
+    if (this == null) return false
+    val parcelableTypeMirror =
+        processingEnvironment.elementUtils.getTypeElement("android.os.Parcelable").asType()
+    return processingEnvironment.typeUtils.isAssignable(this, parcelableTypeMirror)
 }

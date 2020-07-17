@@ -14,7 +14,7 @@ sealed class DynamicFeature {
 
     abstract val type: FeatureType
 
-    val params: MutableMap<String, Element> = linkedMapOf()
+    private val params: MutableMap<String, Element> = linkedMapOf()
 
     data class IntentFeature(
         override val featureName: String,

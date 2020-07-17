@@ -22,3 +22,13 @@ fun TypeMirror?.isActivity(processingEnvironment: ProcessingEnvironment): Boolea
         .getTypeElement("android.app.Activity").asType()
     return processingEnvironment.typeUtils.isAssignable(this, activityTypeMirror)
 }
+
+/*
+ * Checks if class is Serializable
+ */
+fun TypeMirror?.isSerializable(processingEnvironment: ProcessingEnvironment): Boolean {
+    if (this == null) return false
+    val serializableTypeMirror =
+        processingEnvironment.elementUtils.getTypeElement("java.io.Serializable").asType()
+    return processingEnvironment.typeUtils.isAssignable(this, serializableTypeMirror)
+}

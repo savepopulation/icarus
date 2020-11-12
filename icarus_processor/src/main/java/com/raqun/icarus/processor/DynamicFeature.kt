@@ -12,7 +12,7 @@ sealed class DynamicFeature {
 
     abstract val className: String
 
-    abstract val type: FeatureType
+    abstract val type: Feature
 
     private val params: MutableMap<String, Element> = linkedMapOf()
 
@@ -20,15 +20,21 @@ sealed class DynamicFeature {
         override val featureName: String,
         override val packageName: String,
         override val className: String,
-        override val type: FeatureType = FeatureType.INTENT
-    ) : DynamicFeature()
+    ) : DynamicFeature() {
+
+        override val type: Feature
+            get() = Feature.intent()
+    }
 
     data class FragmentFeature(
         override val featureName: String,
         override val packageName: String,
         override val className: String,
-        override val type: FeatureType = FeatureType.FRAGMENT
-    ) : DynamicFeature()
+    ) : DynamicFeature() {
+
+        override val type: Feature
+            get() = Feature.fragment()
+    }
 
     fun build(): TypeSpec {
         return with(TypeSpec.objectBuilder(this.featureName)) {
@@ -69,5 +75,26 @@ sealed class DynamicFeature {
 
     fun addParam(key: String, e: Element) {
         params[key] = e
+    }
+
+    class Feature private constructor(
+        val packageName: String,
+        val simpleName: String,
+        val method: String
+    ) {
+        companion object {
+
+            fun intent() = Feature(
+                packageName = "android.content",
+                simpleName = "Intent",
+                method = "createIntentFeature"
+            )
+
+            fun fragment() = Feature(
+                packageName = "androidx.fragment.app",
+                simpleName = "Fragment",
+                method = "createFragmentFeature"
+            )
+        }
     }
 }

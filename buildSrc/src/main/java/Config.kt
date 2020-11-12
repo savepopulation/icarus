@@ -7,7 +7,7 @@ object Config {
     const val targetSdkVersion = Versions.targetSdkVersion
     const val compileSdkVersion = Versions.compileSdkVersion
     const val testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
-    const val versionCode = 0
+    const val versionCode = 1
     const val versionName = "1.0.0"
 }
 
@@ -27,7 +27,7 @@ object Prod {
 }
 
 object Dev {
-    const val suffix = ".dev"
+    private const val suffix = ".dev"
     const val versionCode = Config.versionCode * 10000
     const val versionName = Config.versionName
     const val versionNameSuffix = suffix

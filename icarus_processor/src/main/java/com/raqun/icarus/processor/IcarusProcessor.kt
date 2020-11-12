@@ -95,6 +95,7 @@ class IcarusProcessor : AbstractProcessor() {
             }
         }
 
+        /*
         val citizens: MutableList<out Element> = element.enclosedElements
         if (!citizens.isNullOrEmpty()) {
             for (citizen in citizens) {
@@ -107,7 +108,7 @@ class IcarusProcessor : AbstractProcessor() {
                 }
                 feature.addParam(param.key, citizen)
             }
-        }
+        }*/
 
         features.add(feature)
     }

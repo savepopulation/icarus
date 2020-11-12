@@ -2,10 +2,8 @@ package com.raqun.icarus.processor
 
 import com.google.auto.service.AutoService
 import com.raqun.icarus.annotations.Feature
-import com.raqun.icarus.annotations.Param
 import com.raqun.icarus.processor.util.*
 import com.squareup.kotlinpoet.*
-import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.plusParameter
 import java.io.IOException
 import javax.annotation.processing.AbstractProcessor
 import javax.annotation.processing.Processor
@@ -23,8 +21,8 @@ const val DYNAMIC_START_METHOD_NAME = "dynamicStart"
 class IcarusProcessor : AbstractProcessor() {
 
     private var round = -1
-    private var HALT = false
-    private val features = arrayListOf<DynamicFeature>()
+    private var result = false
+    private val features = mutableListOf<DynamicFeature>()
 
     override fun getSupportedSourceVersion(): SourceVersion? = SourceVersion.latestSupported()
 
@@ -32,24 +30,24 @@ class IcarusProcessor : AbstractProcessor() {
 
     override fun process(p0: MutableSet<out TypeElement>?, roundEnv: RoundEnvironment?): Boolean {
 
-        processingEnv.log("started")
+        processingEnv.log("icarus started")
 
         round++
 
         if (!doProcess(roundEnv)) {
-            return HALT
+            return result
         }
 
         if (roundEnv != null && roundEnv.processingOver()) {
             try {
                 generateFiles()
-                HALT = true
+                result = true
             } catch (e: IOException) {
                 processingEnv.logError(e.message)
             }
         }
 
-        return HALT
+        return result
     }
 
     private fun doProcess(roundEnv: RoundEnvironment?): Boolean = processFeatures(roundEnv)
@@ -114,7 +112,7 @@ class IcarusProcessor : AbstractProcessor() {
     }
 
     private fun generateFiles() {
-        processingEnv.log("Icarus generating files")
+        processingEnv.log("Icarus stared generating files")
         features.forEach {
             FileSpec.builder(PACKAGE_NAME, it.featureName)
                 .addType(it.build())

@@ -9,7 +9,7 @@ object Icarus {
 
     private inline fun <reified T : Any> Any.cast() = this as? T
 
-    private fun intentTo(className: String) = Intent(Intent.ACTION_VIEW).setClassName("package_name_here", className)
+    private fun intentTo(className: String) = Intent(Intent.ACTION_VIEW).setClassName("com.raqun.icarus", className)
 
     private fun <T> String.getFeature(): Class<out T>? =
         classes.getOrPut(this) {

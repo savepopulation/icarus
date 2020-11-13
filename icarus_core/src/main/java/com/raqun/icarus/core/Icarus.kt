@@ -9,7 +9,8 @@ object Icarus {
 
     private inline fun <reified T : Any> Any.cast() = this as? T
 
-    private fun intentTo(className: String) = Intent(Intent.ACTION_VIEW).setClassName("com.raqun.icarus", className)
+    // TODO create a builder to take the package name!
+    private fun intentTo(className: String) = Intent(Intent.ACTION_VIEW).setClassName("com.raqun.icarus.dev", className)
 
     private fun <T> String.getFeature(): Class<out T>? =
         classes.getOrPut(this) {

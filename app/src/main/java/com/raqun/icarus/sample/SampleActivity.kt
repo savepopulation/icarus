@@ -1,9 +1,10 @@
-package com.raqun.icarus
+package com.raqun.icarus.sample
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.raqun.icarus.R
+import com.raqun.icarus.SampleFragmentFeature
 import com.raqun.icarus.annotations.Feature
-import com.raqun.icarus.core.Icarus
 
 @Feature("SampleActivityFeature")
 class SampleActivity : AppCompatActivity() {

@@ -4,6 +4,14 @@ import android.content.Context
 import android.content.Intent
 import androidx.fragment.app.Fragment
 
+/*
+ * Icarus
+ *
+ * A lib to generate navigation classes in multi-module projects
+ *
+ * Using approach to create dynamic features defined by Mario Sanoguera de Lorenzo
+ * https://github.com/sanogueralorenzo
+ */
 object Icarus {
     /*
      * Keeps the classes

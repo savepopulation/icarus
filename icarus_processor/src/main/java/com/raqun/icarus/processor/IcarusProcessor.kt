@@ -73,17 +73,23 @@ class IcarusProcessor : AbstractProcessor() {
 
     private fun createFeature(element: Element) {
         val featureAnnotation = element.getAnnotation(Feature::class.java)
+        val featureName = if (featureAnnotation.name.trim().isNotEmpty()) {
+            featureAnnotation.name
+        } else {
+            "${element.simpleName}${FEATURE_SUFFIX}"
+        }
+
         val feature: DynamicFeature = when {
             element.isActivity(processingEnv) -> {
                 IntentFeature(
-                    featureAnnotation.name,
+                    featureName,
                     processingEnv.elementUtils.getPackageOf(element).toString(),
                     element.simpleName.toString()
                 )
             }
             element.isFragment(processingEnv) -> {
                 FragmentFeature(
-                    featureAnnotation.name,
+                    featureName,
                     processingEnv.elementUtils.getPackageOf(element).toString(),
                     element.simpleName.toString()
                 )
@@ -106,4 +112,9 @@ class IcarusProcessor : AbstractProcessor() {
                 .writeTo(processingEnv.filer)
         }
     }
+
+    companion object {
+        private const val FEATURE_SUFFIX = "Feature"
+    }
 }
+

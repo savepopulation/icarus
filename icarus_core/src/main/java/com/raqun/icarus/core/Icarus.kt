@@ -1,5 +1,6 @@
 package com.raqun.icarus.core
 
+import android.content.Context
 import android.content.Intent
 import androidx.fragment.app.Fragment
 
@@ -7,19 +8,22 @@ object Icarus {
 
     private val classes = mutableMapOf<String, Class<*>>()
 
-    private inline fun <reified T : Any> Any.cast() = this as? T
+    private lateinit var packageName: String
 
-    // TODO create a builder to take the package name!
-    private fun intentTo(className: String) = Intent(Intent.ACTION_VIEW).setClassName("com.raqun.icarus.dev", className)
+    fun init(context: Context) {
+        this.packageName = context.packageName
+    }
 
-    private fun <T> String.getFeature(): Class<out T>? =
-        classes.getOrPut(this) {
-            try {
-                Class.forName(this)
-            } catch (e: ClassNotFoundException) {
-                return null
-            }
-        }.cast()
+    private fun checkIcarus() {
+        if (!this::packageName.isInitialized) {
+            throw IllegalStateException("Icarus is not initialized!")
+        }
+    }
+
+    private fun intentTo(className: String): Intent {
+        checkIcarus()
+        return Intent(Intent.ACTION_VIEW).setClassName(this.packageName, className)
+    }
 
 
     fun String.createIntentFeature() = try {
@@ -34,4 +38,14 @@ object Icarus {
         null
     }
 
+    private fun <T> String.getFeature(): Class<out T>? =
+        classes.getOrPut(this) {
+            try {
+                Class.forName(this)
+            } catch (e: ClassNotFoundException) {
+                return null
+            }
+        }.cast()
 }
+
+internal inline fun <reified T : Any> Any.cast() = this as? T

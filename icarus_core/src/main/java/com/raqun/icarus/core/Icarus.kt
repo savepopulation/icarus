@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
  *
  * Using approach to create dynamic features defined by Mario Sanoguera de Lorenzo
  * https://github.com/sanogueralorenzo
+ * https://medium.com/@sanogueralorenzo
  */
 object Icarus {
     /*

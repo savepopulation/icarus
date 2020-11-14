@@ -1,5 +1,5 @@
 # icarus
-In development..
+A lib to generate navigation classes in multi-module projects less boilerplate code and less errorprone.
 
 ### Dependency<br>
 ```

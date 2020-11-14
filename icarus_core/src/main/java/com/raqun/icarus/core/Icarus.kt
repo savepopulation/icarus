@@ -25,7 +25,6 @@ object Icarus {
         return Intent(Intent.ACTION_VIEW).setClassName(this.packageName, className)
     }
 
-
     fun String.createIntentFeature() = try {
         Class.forName(this).run { intentTo(this@createIntentFeature) }
     } catch (e: ClassNotFoundException) {

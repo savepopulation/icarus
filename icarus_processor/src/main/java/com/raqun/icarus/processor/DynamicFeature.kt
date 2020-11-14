@@ -14,8 +14,6 @@ sealed class DynamicFeature {
 
     abstract val type: Feature
 
-    private val params: MutableMap<String, Element> = linkedMapOf()
-
     data class IntentFeature(
         override val featureName: String,
         override val packageName: String,
@@ -71,10 +69,6 @@ sealed class DynamicFeature {
 
             build()
         }
-    }
-
-    fun addParam(key: String, e: Element) {
-        params[key] = e
     }
 
     class Feature private constructor(

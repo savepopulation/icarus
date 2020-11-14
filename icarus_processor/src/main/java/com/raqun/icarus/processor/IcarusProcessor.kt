@@ -93,21 +93,6 @@ class IcarusProcessor : AbstractProcessor() {
             }
         }
 
-        /*
-        val citizens: MutableList<out Element> = element.enclosedElements
-        if (!citizens.isNullOrEmpty()) {
-            for (citizen in citizens) {
-                val param = citizen.getAnnotation(Param::class.java)
-                if (!citizen.isField()) {
-                    throw IllegalArgumentException("Param annotation can only be used with fields!")
-                }
-                if (param.key.isEmpty() || param.key.isBlank()) {
-                    throw IllegalArgumentException("Param annotation key cannot be empty or blank!")
-                }
-                feature.addParam(param.key, citizen)
-            }
-        }*/
-
         features.add(feature)
     }
 

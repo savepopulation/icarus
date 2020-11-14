@@ -14,11 +14,25 @@ import javax.lang.model.element.TypeElement
 import com.raqun.icarus.processor.DynamicFeature.IntentFeature
 import com.raqun.icarus.processor.DynamicFeature.FragmentFeature
 
+/*
+ * Icarus Processor
+ * Processes the Icarus annotations and generates the code
+ */
 @AutoService(Processor::class)
 class IcarusProcessor : AbstractProcessor() {
+    /*
+     * Counts the round of processing
+     */
 
     private var round = -1
+    /*
+     * Result of Process
+     */
     private var result = false
+
+    /*
+     * Dynamic Features of Project
+     */
     private val features = mutableListOf<DynamicFeature>()
 
     override fun getSupportedSourceVersion(): SourceVersion? = SourceVersion.latestSupported()
@@ -116,4 +130,3 @@ class IcarusProcessor : AbstractProcessor() {
         const val DYNAMIC_START_METHOD_NAME = "dynamicStart"
     }
 }
-

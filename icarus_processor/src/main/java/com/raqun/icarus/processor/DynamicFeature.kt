@@ -4,16 +4,38 @@ import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.plusParameter
 import javax.lang.model.element.Element;
 
+/*
+ * Dynamic Feature
+ * Represents the features of App
+ * which annotated with Icarus Feature Annotation
+ */
 sealed class DynamicFeature {
-
+    /*
+     * Name of Dynamic Feature
+     */
     abstract val featureName: String
 
+    /*
+     * Package name of Dynamic Feature
+     * This property is being used to create the path of the Dynamic Feature
+     */
     abstract val packageName: String
 
+    /*
+     * Class Name of the Feature
+     * This propertyis being used to create the Dynamic Feature
+     */
     abstract val className: String
 
+    /*
+     * Type of the Feature
+     * There're only Intent and Fragment types available for now.
+     */
     abstract val type: Feature
 
+    /*
+     * Represents Activity features
+     */
     data class IntentFeature(
         override val featureName: String,
         override val packageName: String,
@@ -24,6 +46,9 @@ sealed class DynamicFeature {
             get() = Feature.intent()
     }
 
+    /*
+     * Represents Fragment features
+     */
     data class FragmentFeature(
         override val featureName: String,
         override val packageName: String,
@@ -34,6 +59,10 @@ sealed class DynamicFeature {
             get() = Feature.fragment()
     }
 
+    /*
+     * Builds the TypeSpec of the Dynamic Feature
+     * with the given properties
+     */
     fun build(): TypeSpec {
         return with(TypeSpec.objectBuilder(this.featureName)) {
             addSuperinterface(
@@ -71,23 +100,43 @@ sealed class DynamicFeature {
         }
     }
 
+    /*
+     * Feature class
+     * Represents Core feature
+     * Contains data for core android classes
+     */
     class Feature private constructor(
+        /*
+         * Package name of core feature
+         */
         val packageName: String,
+
+        /*
+         * Simple name of core feature
+         */
         val simpleName: String,
-        val method: String
+
+        /*
+         * Icarus's method name will used to create feature
+         * and generated in Dynamic Feature
+         */
+        val method: String = "create${simpleName}Feature"
     ) {
         companion object {
-
+            /*
+             * Creates a default intent feature
+             */
             fun intent() = Feature(
                 packageName = "android.content",
                 simpleName = "Intent",
-                method = "createIntentFeature"
             )
 
+            /*
+             * Creates a default fragment feature
+             */
             fun fragment() = Feature(
                 packageName = "androidx.fragment.app",
                 simpleName = "Fragment",
-                method = "createFragmentFeature"
             )
         }
     }

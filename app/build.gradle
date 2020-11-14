@@ -30,4 +30,7 @@ dependencies {
     implementation project(Modules.icarusAnnotations)
     implementation project(Modules.icarusCore)
     kapt project(Modules.icarusProcessor)
+
+    implementation project(":firstsamplefeature")
+    implementation project(":secondsamplefeature")
 }

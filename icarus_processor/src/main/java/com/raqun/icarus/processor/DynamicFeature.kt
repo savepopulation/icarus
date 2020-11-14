@@ -1,5 +1,7 @@
 package com.raqun.icarus.processor
 
+import com.raqun.icarus.processor.IcarusProcessor.Companion.DYNAMIC_START_METHOD_NAME
+import com.raqun.icarus.processor.IcarusProcessor.Companion.PACKAGE_NAME
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.plusParameter
 import javax.lang.model.element.Element;

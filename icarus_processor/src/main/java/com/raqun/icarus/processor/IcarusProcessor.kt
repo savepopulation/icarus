@@ -14,9 +14,6 @@ import javax.lang.model.element.TypeElement
 import com.raqun.icarus.processor.DynamicFeature.IntentFeature
 import com.raqun.icarus.processor.DynamicFeature.FragmentFeature
 
-const val PACKAGE_NAME = "com.raqun.icarus"
-const val DYNAMIC_START_METHOD_NAME = "dynamicStart"
-
 @AutoService(Processor::class)
 class IcarusProcessor : AbstractProcessor() {
 
@@ -115,6 +112,8 @@ class IcarusProcessor : AbstractProcessor() {
 
     companion object {
         private const val FEATURE_SUFFIX = "Feature"
+        const val PACKAGE_NAME = "com.raqun.icarus"
+        const val DYNAMIC_START_METHOD_NAME = "dynamicStart"
     }
 }
 

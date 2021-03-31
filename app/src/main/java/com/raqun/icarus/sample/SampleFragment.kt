@@ -5,9 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.raqun.firstsamplefeature.FirstSampleFeatureActivity
 import com.raqun.icarus.R
 import com.raqun.icarus.annotations.Feature
+import com.raqun.icarus.core.feature.FirstFeature
 import kotlinx.android.synthetic.main.fragment_sample.*
 
 @Feature("SampleFragmentFeature")
@@ -24,7 +24,7 @@ class SampleFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         buttonNext.setOnClickListener {
-            // TODO open first sample feature!
+            startActivity(FirstFeature.dynamicStart)
         }
     }
 }

@@ -13,6 +13,8 @@ import javax.lang.model.element.Element
 import javax.lang.model.element.TypeElement
 import com.raqun.icarus.processor.DynamicFeature.IntentFeature
 import com.raqun.icarus.processor.DynamicFeature.FragmentFeature
+import java.io.File
+import java.nio.file.Paths
 
 /*
  * Icarus Processor
@@ -25,6 +27,7 @@ class IcarusProcessor : AbstractProcessor() {
      */
 
     private var round = -1
+
     /*
      * Result of Process
      */
@@ -116,11 +119,16 @@ class IcarusProcessor : AbstractProcessor() {
     private fun generateFiles() {
         processingEnv.log("Icarus stared generating files")
         features.forEach {
-            FileSpec.builder(PACKAGE_NAME, it.featureName)
+            val file =
+                File(
+                    Paths.get("").toAbsolutePath()
+                        .toString() + "/icarus_core/src/main/java"
+                )
+            FileSpec.builder("$PACKAGE_NAME.core.feature", it.featureName)
                 .addType(it.build())
                 .addImport("${PACKAGE_NAME}.core.Icarus", it.type.method)
                 .build()
-                .writeTo(processingEnv.filer)
+                .writeTo(file)
         }
     }
 

@@ -2,8 +2,4 @@ apply from: "$rootDir/common-android-library.gradle"
 
 dependencies {
     implementation SupportLibraries.appCompat
-
-    // Icarus
-    api project(Modules.icarusAnnotations)
-    kapt project(Modules.icarusProcessor)
 }

@@ -1,5 +1,7 @@
 apply plugin: Plugins.androidApplication
 apply from: "$rootDir/common.gradle"
+apply plugin: 'com.github.dcendents.android-maven'
+group = 'com.github.savepopulation'
 
 android {
 

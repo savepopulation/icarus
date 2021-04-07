@@ -7,8 +7,8 @@ object Config {
     const val targetSdkVersion = Versions.targetSdkVersion
     const val compileSdkVersion = Versions.compileSdkVersion
     const val testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
-    const val versionCode = 6
-    const val versionName = "1.0.5"
+    const val versionCode = 7
+    const val versionName = "1.0.6"
 }
 
 /*

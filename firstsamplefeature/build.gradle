@@ -1,9 +1,0 @@
-apply from: "$rootDir/common-android-library.gradle"
-
-dependencies {
-    implementation SupportLibraries.appCompat
-
-    implementation project(Modules.icarusAnnotations)
-    implementation project(Modules.icarusCore)
-    kapt project(Modules.icarusProcessor)
-}
